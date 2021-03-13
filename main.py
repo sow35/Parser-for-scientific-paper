@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import sys
 import subprocess
 import re
@@ -8,35 +10,44 @@ if len(sys.argv) < 2:
 	raise ValueError("Please specify a PDF file.")
 
 filename = sys.argv[1]
-text = str(subprocess.check_output(['pdftotext', '-nodiag', '-nopgbrk', filename, '-']))
+text = subprocess.check_output(['pdftotext', '-nodiag', '-nopgbrk', '-raw', filename, '-']).decode()
 
 def getAuthors(text):
-	return re.findall(MailRegex, text.replace("\\n", "\\n "))
+	return re.findall(MailRegex, text)
 
 def getTitle(text):
-	lines = text.split('\\n')
-	title = lines[0][2:]
+	lines = text.split('\n')
+	title = lines[0]
 	i = 1
 	while lines[i][0].islower():
 		title += " " + lines[i]
 		i += 1
 	return title
 
-def getAbstract(text)		# ne fonctionne pas encore
+def getAbstract(text):
 	lines = text.split('\\n')
 	i = 0
 	abstract = ""
 	abstractState = 0
-	while abstractState < 2:
-		if "Abstract" in lines[i]:
-			print(":: Found abstract")
-			abstractState = 1
-			i += 1
+	while i < len(lines) and abstractState < 2:
+		if "ntroduction" in lines[i]:
+			# print(":: Found introduction at line", i)
+			break
 		if abstractState == 1:
-			abstract += " " + lines[i]
-			i += 1
-			if "Introduction" in lines[i]:
-				abstractState = 2
-		else:
-			i += 1
+			if len(lines[i]) > 1:
+				abstract += " " + lines[i]
+				# print(i, lines[i])
+		if "Abstract" in lines[i]:
+			# print(":: Found abstract at line", i)
+			abstractState = 1
+		i += 1
 	return abstract
+
+authors = getAuthors(text)
+title = getTitle(text)
+abstract = getAbstract(text)
+
+print(filename)
+print(title)
+print(" ".join(authors))
+print(abstract.replace("\n", " "))
