@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+# set -e
 
 for pdf in ../Corpus_2021/*.pdf
 do
