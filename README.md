@@ -2,7 +2,12 @@
 
 The aim of this project is to create a pdf analyser for scientific papers
 
-## This is the third "agile sprint"
+## This is the fourth "agile sprint"
+
+In this version, you can select PDF files to parse interactively by running `menu.sh`.
+The parser program (`main.py`) still parses one PDF at a time, this is a deliberate choice: it should not be the parser's role to provide a way to select PDF files (UNIX Philosophy).
+
+## Third "agile sprint"
 
 In this version, the output from the second sprint is formatted in XML.
 Furthermore, references are extracted from the PDF file.
